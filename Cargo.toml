@@ -1,5 +1,5 @@
 [package]
-name = "StrategyRPG"
+name = "strategy_rpg"
 version = "0.1.0"
 edition = "2021"
 
