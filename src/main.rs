@@ -3,12 +3,18 @@ use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use camera::spawn_camera;
 mod camera;
 mod renderer;
+mod spawn_chess_board;
 
 fn main() {
     App::new()
         .add_plugin(renderer::Renderer)
         .add_startup_system(spawn_camera)
         .add_startup_system(spawn_basic_scene)
+        .register_type::<spawn_chess_board::ChessSquare>()
+        .add_startup_system(spawn_chess_board::spawn_chess_board)
+        //.add_startup_system(spawn_chess_board::asset_loading)
+        .add_startup_system(spawn_chess_board::create_game_piece)
+        //.add_system(spawnChessBoard::tower_shooting)
         .add_plugin(WorldInspectorPlugin)
         .run();
 }
@@ -26,14 +32,6 @@ fn spawn_basic_scene(
         })
         .insert(Name::new("Ground"));
     commands
-        .spawn(PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Cube { size: 1.0 })),
-            material: materials.add(Color::rgb(0.67, 0.84, 0.92).into()),
-            transform: Transform::from_xyz(0.0, 0.5, 0.0),
-            ..default()
-        })
-        .insert(Name::new("Cube"));
-    commands
         .spawn(PointLightBundle {
             point_light: PointLight {
                 intensity: 1500.0,
@@ -45,6 +43,3 @@ fn spawn_basic_scene(
         })
         .insert(Name::new("Light"));
 }
-
-#[derive(Component)]
-pub struct Piece {}
