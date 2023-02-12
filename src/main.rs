@@ -1,19 +1,20 @@
+mod chess;
 use bevy::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use camera::spawn_camera;
 mod camera;
 mod renderer;
-mod spawn_chess_board;
 
 fn main() {
     App::new()
         .add_plugin(renderer::Renderer)
         .add_startup_system(spawn_camera)
         .add_startup_system(spawn_basic_scene)
-        .register_type::<spawn_chess_board::ChessSquare>()
-        .add_startup_system(spawn_chess_board::spawn_chess_board)
+        .add_plugin(chess::ChessPlugin)
+        //.register_type::<chess::spawn_chess_board::ChessSquare>()
+        //.add_startup_system(chess::spawn_chess_board::spawn_chess_board)
         //.add_startup_system(spawn_chess_board::asset_loading)
-        .add_startup_system(spawn_chess_board::create_game_piece)
+        //.add_startup_system(chess::chess_piece_control::create_game_piece)
         //.add_system(spawnChessBoard::tower_shooting)
         .add_plugin(WorldInspectorPlugin)
         .run();

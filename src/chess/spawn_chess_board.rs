@@ -6,6 +6,14 @@ pub fn spawn_chess_board(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
+    let parent = commands
+        .spawn(PbrBundle {
+            transform: Transform::from_xyz(0.0, 0.0, 0.0),
+            ..default()
+        })
+        .insert(Name::new("BoardParent"))
+        .insert(ParentChessBoard {})
+        .id();
     for i in 0..8 {
         for j in 0..8 {
             let spawn_transform: Transform =
@@ -17,7 +25,7 @@ pub fn spawn_chess_board(
             } else {
                 Color::rgb(0.42, 0.44, 0.87)
             };
-            commands
+            let cur_block = commands
                 .spawn(PbrBundle {
                     mesh: meshes.add(Mesh::from(shape::Cube { size: 0.3 })),
                     material: materials.add(spawn_color.into()),
@@ -29,36 +37,27 @@ pub fn spawn_chess_board(
                     y_cord: j,
                     normal_color: spawn_color,
                 })
-                .insert(Name::new("Board"));
+                .insert(Name::new("Board"))
+                .id();
+            commands.entity(parent).push_children(&[cur_block]);
         }
     }
 }
 
-pub fn create_game_piece(mut commands: Commands, server: Res<AssetServer>) {
-    let chess_piece: Handle<Scene> = server.load("chess.glb#Scene0");
-    commands
-        .spawn(SceneBundle {
-            scene: chess_piece,
-            transform: Transform::from_xyz(0.0, 0.995, 0.6).with_scale(Vec3::new(0.1, 0.1, 0.1)),
-            ..Default::default()
-        })
-        .insert(ChessPiece {
-            x_cord: 0,
-            y_cord: 0,
-        })
-        .insert(Name::new("Chess piece"));
-}
 #[derive(Reflect, Component, Default)]
 #[reflect(Component)]
-pub struct ChessSquare {
+struct SquareColorChanges {
     x_cord: i16,
     y_cord: i16,
-    normal_color: Color,
+    color: Color,
 }
+#[derive(Component)]
+pub struct ParentChessBoard {}
 
 #[derive(Reflect, Component, Default)]
 #[reflect(Component)]
-pub struct ChessPiece {
-    x_cord: i16,
-    y_cord: i16,
+pub struct ChessSquare {
+    pub x_cord: i16,
+    pub y_cord: i16,
+    pub normal_color: Color,
 }
