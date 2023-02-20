@@ -44,13 +44,6 @@ pub fn spawn_chess_board(
     }
 }
 
-#[derive(Reflect, Component, Default)]
-#[reflect(Component)]
-struct SquareColorChanges {
-    x_cord: i16,
-    y_cord: i16,
-    color: Color,
-}
 #[derive(Component)]
 pub struct ParentChessBoard {}
 
